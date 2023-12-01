@@ -28,7 +28,16 @@ n_map = {
     "nine": "n9e",
 }
 
+# Method 1: Regex (lookaheads + substitution)
+
 # See https://stackoverflow.com/a/5616910
-exp = re.compile(f"(?=({'|'.join(n_map.keys())}))")
-lines = [re.sub(exp, lambda n: n_map[str(n.group(1))], l) for l in lines]
+# exp = re.compile(f"(?=({'|'.join(n_map.keys())}))")
+# lines = [re.sub(exp, lambda n: n_map[str(n.group(1))], l) for l in lines]
+
+# Method 2: Replace
+
+for i in range(len(lines)):
+    for n in n_map.keys():
+        lines[i] = lines[i].replace(n, n_map[n])
+
 print(f"Part 2: {get_cals(lines)}")
