@@ -1,37 +1,34 @@
 #!/usr/bin/env python3
 # https://adventofcode.com/2023/day/1
-
 import re
 
 with open("input.txt", "r", encoding="utf8") as f:
     lines = f.read().splitlines()
 
-vals = [[c for c in l if c.isdigit()] for l in lines]
-cals = [int(v[0] + v[-1]) for v in vals]
-print(f"Part 1: {sum(cals)}")
 
-# lines = """two1nine
-# eightwothree
-# abcone2threexyz
-# xtwone3four
-# 4nineeightseven2
-# zoneight234
-# 7pqrstsixteen""".splitlines()
+def get_cals(lines):
+    return sum([int(v[0] + v[-1]) for v in [[c for c in l if c.isdigit()] for l in lines]])
 
-# The sample output above produces the correct answer
 
-n_map = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
+print(f"Part 1: {get_cals(lines)}")
 
-lines = [re.sub(f"({'|'.join(n_map.keys())})", lambda n: str(n_map[n.group()]), l) for l in lines]
+# Unique starting and ending chars:
+# e f n o r s t x
+# Starting and ending chars appearing at least twice:
+# e f n o s t
+n_map = {
+    "one": "o1e",
+    "two": "t2o",
+    "three": "t3e",
+    "four": "f4",
+    "five": "f5e",
+    "six": "s6",
+    "seven": "s7n",
+    "eight": "e8t",
+    "nine": "n9e",
+}
 
-vals = [[c for c in l if c.isdigit()] for l in lines]
-cals = [int(v[0] + v[-1]) for v in vals]
-# cals = [int(v[0] + v[-1]) if len(v) > 1 else int(v[0]) for v in vals]
-
-# BUG: This isn't giving the correct result, need to track down the issue
-
-# wrong:
-# 56322
-# 53262
-# 55108 (part 1)
-print(f"Part 2: {sum(cals)}")
+# See https://stackoverflow.com/a/5616910
+exp = re.compile(f"(?=({'|'.join(n_map.keys())}))")
+lines = [re.sub(exp, lambda n: n_map[str(n.group(1))], l) for l in lines]
+print(f"Part 2: {get_cals(lines)}")
