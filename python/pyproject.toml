@@ -8,7 +8,7 @@ select = ["E", "W", "F", "B", "PL", "RUF", "C4", "A", "D", "I", "UP", "PIE"]
 # https://beta.ruff.rs/docs/faq/#ruff-tried-to-fix-something-but-it-broke-my-code
 unfixable = ["B", "SIM", "TRY"]  # avoid risky autofix
 
-extend-ignore = ["D1", "UP015", "E741", "D211", "D213"]
+extend-ignore = ["D1", "UP015", "E741", "D211", "D213", "E501", "PLR2004"]
 # Ignore:
 # D1** - Missing docstring in ... (public module, class, __init__, etc.)
 # UP015 - Unnecessary open mode parameters (open("file", "r"))
