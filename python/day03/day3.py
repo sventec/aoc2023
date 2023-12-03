@@ -1,85 +1,53 @@
 #!/usr/bin/env python3
 # https://adventofcode.com/2023/day/3
-
-from collections import OrderedDict, defaultdict
 import string
+from collections import defaultdict
 
 with open("input.txt", "r", encoding="utf8") as f:
     lines = f.read().splitlines()
 
-# lines = """467..114..
-# ...*......
-# ..35..633.
-# ......#...
-# 617*......
-# .....+.58.
-# ..592.....
-# ......755.
-# ...$.*....
-# .664.598..""".splitlines()
+# Transpose for easier x,y lookup
+lines = list(zip(*lines, strict=True))  # type: ignore[arg-type]
 
-# Transpose for easier x,y access
-lines = list(zip(*lines, strict=True))
-
-X_MAX = range(len(lines))
-Y_MAX = range(len(lines[0]))
+X_RANGE = range(len(lines))
+Y_RANGE = range(len(lines[0]))
 NON_SYMBOL = string.digits + "."
-SYMBOL = "*$=/+%#-&@"
 
-# Get location of all symbols
-sym = {(x, y) for x in X_MAX for y in Y_MAX if lines[x][y] not in NON_SYMBOL}
-
-# symbols = set()
-# for y in Y_MAX:
-#     for x in X_MAX:
-#         if lines[x][y] not in NON_SYMBOL:
-#             print(lines[x][y])
-#             symbols.add(lines[x][y])
-# print(symbols)
-
-# print(sym)
-# print()
-
-# Get location range of all numbers
+# Get location range of all numbers, e.g. ((0, 2), 0) = 467
 nums = {}
 buf = {}
-for y in Y_MAX:
-    for x in X_MAX:
+for y in Y_RANGE:
+    for x in X_RANGE:
         c = lines[x][y]
         if c.isdigit():
-            # print(f"{x}, {y}: {c}")
             buf[x] = c
-        elif buf:
-            idxs = sorted(buf.keys())
-            nums[((idxs[0], idxs[-1]), y)] = "".join(buf.values())
+        # Add buf to nums: if num in buffer, AND (at end of line OR current char is not digit)
+        if buf and (x == X_RANGE[-1] or not c.isdigit()):
+            nums[(((k := list(buf.keys()))[0], k[-1]), y)] = "".join(buf.values())
             buf = {}
-    # New row, clear buf
-    buf = {}
 
-# print(nums)
+# Get location of all symbols
+sym = {(x, y) for x in X_RANGE for y in Y_RANGE if lines[x][y] not in NON_SYMBOL}
 
 # Keep only numbers adjacent to a symbol
-parts = []
+parts = defaultdict(list)
 for idxs, n in nums.items():
     edges = {(x, idxs[1] + y) for x in range(idxs[0][0] - 1, idxs[0][1] + 2) for y in (-1, 0, 1)}
-    if edges.intersection(sym):
-        # print("intersection:" + n)
-        # print(edges.intersection(sym))
-        parts.append(n)
-    else:
-        print(f"{idxs}: {n}")
-    # print(edges)
+    for s in edges.intersection(sym):
+        parts[s].append(int(n))
+    # else:
+    #     # Display number context (edges), only displays invalid numbers
+    #     print(f"{idxs}: {n}")
+    #     for y in (-1, 0, 1):
+    #         for x in range(idxs[0][0] -1, idxs[0][1] + 2):
+    #             try:
+    #                 print(lines[x][idxs[1] + y], end="")
+    #             except IndexError:
+    #                 print("x", end="")
+    #         print()
 
-
-# print(nums)
-# print(parts)
-
-part_1 = sum(int(part) for part in parts)
-
-# 534573 - too low
-# 532422
+part_1 = sum(sum(part) for part in parts.values())
 print(f"Part 1: {part_1}")
 
-
-
-# print(f"Part 2: {}")
+part_2 = sum(nums[0] * nums[1] for s, nums in parts.items() if lines[s[0]][s[1]] == "*" and len(nums) == 2)
+print(f"Part 2: {part_2}")
