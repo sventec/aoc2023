@@ -33,8 +33,9 @@ sym = {(x, y) for x in X_RANGE for y in Y_RANGE if lines[x][y] not in NON_SYMBOL
 parts = defaultdict(list)
 for idxs, n in nums.items():
     edges = {(x, idxs[1] + y) for x in range(idxs[0][0] - 1, idxs[0][1] + 2) for y in (-1, 0, 1)}
-    for s in edges.intersection(sym):
-        parts[s].append(int(n))
+    # Assumption: never more than one symbol touching a number
+    if (s := edges.intersection(sym)):
+        parts[s.pop()].append(int(n))
     # else:
     #     # Display number context (edges), only displays invalid numbers
     #     print(f"{idxs}: {n}")
