@@ -29,13 +29,16 @@ for y in Y_RANGE:
 # Get location of all symbols
 sym = {(x, y) for x in X_RANGE for y in Y_RANGE if lines[x][y] not in NON_SYMBOL}
 
-# Keep only numbers adjacent to a symbol
+valid_nums = []  # List for part 1 (not needed if assuming max 1 symbol touches number)
 parts = defaultdict(list)
+# Keep only numbers adjacent to a symbol
 for idxs, n in nums.items():
     edges = {(x, idxs[1] + y) for x in range(idxs[0][0] - 1, idxs[0][1] + 2) for y in (-1, 0, 1)}
-    # Assumption: never more than one symbol touching a number
-    if (s := edges.intersection(sym)):
-        parts[s.pop()].append(int(n))
+    valid_sym = edges.intersection(sym)
+    if valid_sym:
+        valid_nums.append(int(n))
+        for s in valid_sym:
+            parts[s].append(int(n))
     # else:
     #     # Display number context (edges), only displays invalid numbers
     #     print(f"{idxs}: {n}")
@@ -47,8 +50,7 @@ for idxs, n in nums.items():
     #                 print("x", end="")
     #         print()
 
-part_1 = sum(sum(part) for part in parts.values())
-print(f"Part 1: {part_1}")
+print(f"Part 1: {sum(valid_nums)}")
 
 part_2 = sum(nums[0] * nums[1] for s, nums in parts.items() if lines[s[0]][s[1]] == "*" and len(nums) == 2)
 print(f"Part 2: {part_2}")
