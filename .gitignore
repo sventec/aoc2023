@@ -1,3 +1,6 @@
+# Ignore inputs (requested by AOC)
+input.txt
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
