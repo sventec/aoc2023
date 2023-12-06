@@ -28,4 +28,4 @@ def q(a, b, c):
     return res
 
 ts = q(-1, time, distance * -1)  # [winning time max, winning time min]
-print(round(ts[0] - ts[1]))
+print(f"Part 2: {round(ts[0] - ts[1])}")
