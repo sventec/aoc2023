@@ -5,9 +5,6 @@ import math
 with open("input.txt", "r", encoding="utf8") as f:
     lines = f.read().splitlines()
 
-# lines = """Time:      7  15   30
-# Distance:  9  40  200""".splitlines()
-
 lt, ld = ([int(i) for i in lines[n].split()[1:]] for n in range(2))
 
 # races are tuples of (time, distance)
@@ -19,9 +16,8 @@ print(f"Part 1: {math.prod(r_times)}")
 time = int("".join(str(n) for n in lt))
 distance = int("".join(str(d) for d in ld))
 
-
 # Quadratic formula, get values at each X (time) intercept -- min & max of winning time range
-# Formula for intercepts, transformed from line 15 above. x is t:
+# Formula for intercepts, transformed from line 12 above. x is t:
 # -x^2 + time * x - distance = 0
 def q(a, b, c):
     res = []
@@ -30,7 +26,6 @@ def q(a, b, c):
     for op in (-1, 1):
         res.append((-b + s * op) / (2 * a))
     return res
-
 
 ts = q(-1, time, distance * -1)  # [winning time max, winning time min]
 print(round(ts[0] - ts[1]))
