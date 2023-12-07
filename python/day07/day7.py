@@ -42,19 +42,19 @@ class Hand:
 
     def get_type(self):
         # Get hand type for current Hand
-        common = Counter(self.cards).most_common()
-        match common[0][1]:
+        ct = Counter(self.cards).most_common()
+        match ct[0][1]:
             case 5:
                 self.type = Types.FiveKind
             case 4:
                 self.type = Types.FourKind
             case 3:
-                if common[1][1] == 2:
+                if ct[1][1] == 2:
                     self.type = Types.FullHouse
                 else:
                     self.type = Types.ThreeKind
             case 2:
-                if common[1][1] == 2:
+                if ct[1][1] == 2:
                     self.type = Types.TwoPair
                 else:
                     self.type = Types.OnePair
@@ -90,15 +90,10 @@ class Hand:
         # Mutate cards, replacing Jokers with next highest value
         if "J" not in self.cards:
             return
-
-        common = Counter(self.cards).most_common()
+        ct = Counter(self.cards).most_common()
         self.mut = True
-        if common[0][0] == "J" and len(common) > 1:
-            # Use 2nd most common element, if Jokers are most common (and hand is not *all* Jokers)
-            r = common[1][0]
-        else:
-            r = common[0][0]  # Use most common element
-        self.cards = list(self.hand.replace("J", r))  # Replace Jokers with element
+        # Use 2nd most common element if Jokers are most common (and hand is not *all* Jokers), else use most common
+        self.cards = list(self.hand.replace("J", ct[1][0] if ct[0][0] == "J" and len(ct) > 1 else ct[0][0]))
         self.type = self.get_type()  # Get new type
 
 
